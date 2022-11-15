@@ -17,8 +17,33 @@ model User {
   lastName       String
   password       String
   universityTie  UniversityTie @default(student)
+  status         UserStatus    @default(pending_auth)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+}
+
+model Page {
+  id           String              @id @default(uuid())
+  title        String
+  content      String
+  slug         String              @unique
+  categories   CategoriesOnPages[]
+}
+
+model Category {
+  id      String @id @default(uuid())
+  title   String
+  pages   CategoriesOnPages[]
+}
+
+model CategoriesOnPages {
+  page       Page     @relation(fields: [pageId], references: [id])
+  pageId     String // relation scalar field (used in the `@relation` attribute above)
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String // relation scalar field (used in the `@relation` attribute above)
+  assignedAt DateTime @default(now())
+
+  @@id([pageId, categoryId])
 }
 
 enum UniversityTie {
@@ -27,28 +52,9 @@ enum UniversityTie {
   employee
 }
 
-// model Post {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   title     String   @db.VarChar(255)
-//   content   String?
-//   published Boolean  @default(false)
-//   author    User     @relation(fields: [authorId], references: [id])
-//   authorId  Int
-// }
-
-// model Profile {
-//   id     Int     @id @default(autoincrement())
-//   bio    String?
-//   user   User    @relation(fields: [userId], references: [id])
-//   userId Int     @unique
-// }
-
-// model User {
-//   id      Int      @id @default(autoincrement())
-//   email   String   @unique
-//   name    String?
-//   posts   Post[]
-//   profile Profile?
-// }
+enum UserStatus {
+  active
+  pending_auth
+  suspended
+  banned
+}
