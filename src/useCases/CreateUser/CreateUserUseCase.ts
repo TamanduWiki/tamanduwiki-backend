@@ -12,7 +12,12 @@ export class CreateUserUseCase {
       throw new Error('User already exists.');
     }
 
-    const user = new User({ ...data, createdAt: new Date() ,updatedAt: new Date() });
+    const user = new User({
+      ...data,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      status: "pending_auth",
+    });
 
     await this.usersRepository.save(user);
   }

@@ -1,4 +1,4 @@
-import { UniversityTie, User as PrismaUser } from "@prisma/client";
+import { UniversityTie, User as PrismaUser, UserStatus } from "@prisma/client";
 import { v4 as uuid } from "uuid";
 
 export class User implements PrismaUser {
@@ -10,6 +10,7 @@ export class User implements PrismaUser {
   universityTie: UniversityTie;
   createdAt: Date;
   updatedAt: Date;
+  status: UserStatus;
 
   constructor(props: Omit<User, 'id'>, id?: string) {
     Object.assign(this, props);

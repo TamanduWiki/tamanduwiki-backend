@@ -28,12 +28,15 @@ model Page {
   content      String
   slug         String              @unique
   categories   CategoriesOnPages[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
 }
 
 model Category {
-  id      String @id @default(uuid())
-  title   String
-  pages   CategoriesOnPages[]
+  id        String              @id @default(uuid())
+  title     String
+  pages     CategoriesOnPages[]
+  createdAt DateTime            @default(now())
 }
 
 model CategoriesOnPages {
