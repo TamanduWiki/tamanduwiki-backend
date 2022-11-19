@@ -26,4 +26,31 @@ export class PrismaPagesRepository implements IPagesRepository {
 
     return pages;
   }
+
+  async findAllByNameOrCategory(searchParam: string) {
+    const pages = await prisma.page.findMany({
+      where: {
+        OR: [
+          {
+            title: {
+              contains: searchParam,
+            },
+          },
+          {
+            categories: {
+              some: {
+                category: {
+                  title: {
+                    contains: searchParam,
+                  },
+                },
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    return pages;
+  };
 }

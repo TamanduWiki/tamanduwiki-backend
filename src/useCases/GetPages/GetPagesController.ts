@@ -8,13 +8,21 @@ export class GetPagesController {
 
   async handle(request: Request, response: Response): Promise<Response> {
     try {
-      const pages = await this.getPagesUseCase.execute();
+      const { searchFor } = request.query;
 
-      return response.status(200).json(pages).send();
+      if (!['string', 'undefined'].includes(typeof searchFor)) {
+        return response.status(400).json({
+          message: "Invalid query param 'searchFor'. Use a 'string' or undefined",
+        });
+      }
+
+      const pages = await this.getPagesUseCase.execute(searchFor as string | undefined);
+
+      return response.status(200).json(pages);
     } catch (error: any) {
       return response.status(400).json({
         message: error.message || 'Unexpected Error.',
-      })
+      });
     }
   }
 }
