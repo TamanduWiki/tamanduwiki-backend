@@ -8,6 +8,7 @@ export class Page implements PrismaPage {
   slug: string;
   createdAt: Date;
   updatedAt: Date;
+  imageUrl: string | null;
 
   constructor(props: Omit<Page, 'id'>, id?: string) {
     Object.assign(this, props);

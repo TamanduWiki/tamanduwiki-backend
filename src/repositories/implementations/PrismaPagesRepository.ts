@@ -5,6 +5,10 @@ import { prisma } from "@/global/prismaClient";
 import { IPagesRepository } from "../IPagesRepository";
 
 export class PrismaPagesRepository implements IPagesRepository {
+  async delete (id: string): Promise<void> {
+    await prisma.page.delete({ where: { id } });
+  };
+
   async findById(id: string): Promise<Page | undefined> {
     const page = await prisma.page.findUnique({ where: { id } });
 
@@ -21,14 +25,33 @@ export class PrismaPagesRepository implements IPagesRepository {
     await prisma.page.create({ data: page });
   };
 
-  async listAll(): Promise<Page[]> {
-    const pages = await prisma.page.findMany();
+  // deprecated
+  // async listAll(page?: number, per?: number) {
+  //   const queryPage = page || 1;
+  //   const queryPer = per || 10;
 
-    return pages;
-  }
+  //   const pages = await prisma.page.findMany({
+  //     skip: (queryPage - 1) * queryPer,
+  //     take: queryPer,
+  //   });
 
-  async findAllByNameOrCategory(searchParam: string) {
-    const pages = await prisma.page.findMany({
+  //   const totalPages = await prisma.page.count({});
+
+  //   return {
+  //     pages,
+  //     meta: {
+  //       page: queryPage,
+  //       per: queryPer,
+  //       total: totalPages,
+  //     },
+  //   };
+  // }
+
+  async findAllByNameOrCategory(searchParam?: string, page?: number, per?: number) {
+    const queryPage = page || 1;
+    const queryPer = per || 10;
+
+    const searchClause = {
       where: {
         OR: [
           {
@@ -49,8 +72,28 @@ export class PrismaPagesRepository implements IPagesRepository {
           },
         ],
       },
+    }
+
+    const pages = await prisma.page.findMany({
+      skip: (queryPage - 1) * queryPer,
+      take: queryPer,
+      ...searchClause,
+      orderBy: {
+        createdAt: 'desc'
+      }
     });
 
-    return pages;
+    const totalPages = await prisma.page.count({
+      ...searchClause,
+    });
+
+    return {
+      pages,
+      meta: {
+        page: queryPage,
+        per: queryPer,
+        total: totalPages,
+      },
+    };
   };
 }
