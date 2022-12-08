@@ -6,10 +6,10 @@ export class GetPageController {
   constructor (private getPageUseCase: GetPageUseCase) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const { id } = request.params;
+    const { slug } = request.params;
 
     try {
-      const page = await this.getPageUseCase.execute(id)
+      const page = await this.getPageUseCase.execute(slug);
 
       return response.status(200).json(page);
     } catch (error: any) {

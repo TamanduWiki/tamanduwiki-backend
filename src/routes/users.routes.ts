@@ -1,7 +1,11 @@
 import { Router } from "express";
 
+import { authenticateUser } from "@/middlewares/auth";
+
 import { createUserController } from "@/useCases/CreateUser";
-import { getUsersController } from "@/useCases/GetUsers";
+import { listUsersController } from "@/useCases/ListUsers";
+import { loginController } from "@/useCases/Login";
+import { getUserController } from "@/useCases/GetUser";
 
 const router = Router();
 
@@ -9,8 +13,16 @@ router.post('/users', (request, response) => {
   return createUserController.handle(request, response);
 });
 
-router.get('/users', (request, response) => {
-  return getUsersController.handle(request, response);
+router.get('/users', authenticateUser, (request, response) => {
+  return listUsersController.handle(request, response);
+})
+
+router.post('/login', (request, response) => {
+  return loginController.handle(request, response);
+})
+
+router.get('/user-info', authenticateUser, (request, response) => {
+  return getUserController.handle(request, response);
 })
 
 export { router };

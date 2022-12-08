@@ -1,5 +1,5 @@
 import { Page } from "@/entities/Page";
-import { WithMetaProps } from "@/interfaces/metaProps";
+import { WithMetaProps } from "@/types/metaProps";
 
 import { IPagesRepository } from "@/repositories/IPagesRepository";
 

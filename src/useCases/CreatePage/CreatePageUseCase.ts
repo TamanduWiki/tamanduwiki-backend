@@ -8,7 +8,7 @@ import { ICreatePageRequestDTO } from "./CreatePageDTO";
 export class CreatePageUseCase {
   constructor (private pagesRepository: IPagesRepository, private filesRepository: IFilesRepository) {}
 
-  async execute(data: ICreatePageRequestDTO) {
+  async execute(data: ICreatePageRequestDTO): Promise<Page> {
     const pageAlreadyExists = await this.pagesRepository.findBySlug(data.slug);
 
     if (pageAlreadyExists) {
@@ -32,6 +32,6 @@ export class CreatePageUseCase {
       imageUrl: imageUrl || null,
     });
 
-    await this.pagesRepository.save(page);
+    return await this.pagesRepository.save(page);
   }
 }

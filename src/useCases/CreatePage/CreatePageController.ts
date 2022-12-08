@@ -9,7 +9,7 @@ export class CreatePageController {
     const { title, content, slug, imageBase64, imageFileType } = request.body;
 
     try {
-      await this.createPageUseCase.execute({
+      const createdPage = await this.createPageUseCase.execute({
         title,
         content,
         slug,
@@ -17,7 +17,7 @@ export class CreatePageController {
         imageFileType
       })
 
-      return response.status(201).send();
+      return response.status(201).json(createdPage);
     } catch (error: any) {
       return response.status(400).json({
         message: error.message || 'Unexpected Error.',

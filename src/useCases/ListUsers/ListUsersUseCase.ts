@@ -1,6 +1,6 @@
 import { IUsersRepository } from "@/repositories/IUsersRepository";
 
-export class GetUsersUseCase {
+export class ListUsersUseCase {
   constructor (private usersRepository: IUsersRepository) {}
 
   async execute() {

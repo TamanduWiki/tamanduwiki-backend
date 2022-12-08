@@ -18,6 +18,6 @@
 - [x] List users
 - [ ] POST fields validations
 - [ ] Authentication (JWT, middleware...)
-
+- [ ] Encrypt password on Database
 ### ...
 - [] Many more things

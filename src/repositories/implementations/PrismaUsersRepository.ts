@@ -11,8 +11,10 @@ export class PrismaUsersRepository implements IUsersRepository {
     return user || undefined;
   }
 
-  async save(user: User): Promise<void> {
-    await prisma.user.create({ data: user });
+  async save(user: User): Promise<User> {
+    const createdUser = await prisma.user.create({ data: user });
+
+    return createdUser;
   };
 
   async listAll(): Promise<User[]> {

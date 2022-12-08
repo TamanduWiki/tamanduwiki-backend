@@ -21,8 +21,10 @@ export class PrismaPagesRepository implements IPagesRepository {
     return page || undefined;
   }
 
-  async save(page: Page): Promise<void> {
-    await prisma.page.create({ data: page });
+  async save(page: Page): Promise<Page> {
+    const createdPage = await prisma.page.create({ data: page });
+
+    return createdPage;
   };
 
   // deprecated

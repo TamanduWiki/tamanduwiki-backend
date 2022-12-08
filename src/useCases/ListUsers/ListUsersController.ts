@@ -1,10 +1,10 @@
-export interface IGetUsersRequestDTO {}
+export interface IListUsersRequestDTO {}
 import { Request, Response } from "express";
 
-import { GetUsersUseCase } from "./GetUsersUseCase";
+import { ListUsersUseCase } from "./ListUsersUseCase";
 
-export class GetUsersController {
-  constructor (private getUsersUseCase: GetUsersUseCase) {}
+export class ListUsersController {
+  constructor (private getUsersUseCase: ListUsersUseCase) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
     try {
