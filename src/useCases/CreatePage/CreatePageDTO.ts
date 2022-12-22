@@ -4,4 +4,5 @@ export interface ICreatePageRequestDTO {
   slug: string;
   imageBase64: string;
   imageFileType: string;
+  categoriesTitles?: string[];
 }

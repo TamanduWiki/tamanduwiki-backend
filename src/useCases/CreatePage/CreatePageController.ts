@@ -6,10 +6,11 @@ export class CreatePageController {
   constructor (private createPageUseCase: CreatePageUseCase) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const { title, content, slug, imageBase64, imageFileType } = request.body;
+    const { title, content, slug, imageBase64, imageFileType, categoriesTitles } = request.body;
 
     try {
       const createdPage = await this.createPageUseCase.execute({
+        categoriesTitles,
         title,
         content,
         slug,

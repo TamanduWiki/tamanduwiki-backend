@@ -10,44 +10,38 @@ export class PrismaPagesRepository implements IPagesRepository {
   };
 
   async findById(id: string): Promise<Page | undefined> {
-    const page = await prisma.page.findUnique({ where: { id } });
+    const page = await prisma.page.findUnique({
+      where: { id },
+      include: { categories: true },
+    });
 
     return page || undefined;
   }
 
   async findBySlug(slug: string): Promise<Page | undefined> {
-    const page = await prisma.page.findUnique({ where: { slug } });
+    const page = await prisma.page.findUnique({
+      where: { slug },
+      include: { categories: true },
+    });
 
     return page || undefined;
   }
 
-  async save(page: Page): Promise<Page> {
-    const createdPage = await prisma.page.create({ data: page });
+  async save(page: Omit<Page, 'categories'>, categoriesTitles: string[]): Promise<Page> {
+    const createdPage = await prisma.page.create({
+      data: {
+        ...page,
+        categories: {
+          connect: categoriesTitles.map(title => ({ title })),
+        }
+      },
+      include: {
+        categories: true,
+      }
+    });
 
     return createdPage;
   };
-
-  // deprecated
-  // async listAll(page?: number, per?: number) {
-  //   const queryPage = page || 1;
-  //   const queryPer = per || 10;
-
-  //   const pages = await prisma.page.findMany({
-  //     skip: (queryPage - 1) * queryPer,
-  //     take: queryPer,
-  //   });
-
-  //   const totalPages = await prisma.page.count({});
-
-  //   return {
-  //     pages,
-  //     meta: {
-  //       page: queryPage,
-  //       per: queryPer,
-  //       total: totalPages,
-  //     },
-  //   };
-  // }
 
   async findAllByNameOrCategory(searchParam?: string, page?: number, per?: number) {
     const queryPage = page || 1;
@@ -64,10 +58,8 @@ export class PrismaPagesRepository implements IPagesRepository {
           {
             categories: {
               some: {
-                category: {
-                  title: {
-                    contains: searchParam,
-                  },
+                title: {
+                  contains: searchParam,
                 },
               },
             },
@@ -82,7 +74,10 @@ export class PrismaPagesRepository implements IPagesRepository {
       ...searchClause,
       orderBy: {
         createdAt: 'desc'
-      }
+      },
+      include: {
+        categories: true,
+      },
     });
 
     const totalPages = await prisma.page.count({

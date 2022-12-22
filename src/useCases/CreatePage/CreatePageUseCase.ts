@@ -1,3 +1,5 @@
+import { v4 as uuid } from 'uuid';
+
 import { Page } from "@/entities/Page";
 
 import { IFilesRepository } from "@/repositories/IFilesRepository";
@@ -23,15 +25,16 @@ export class CreatePageUseCase {
       ? await this.filesRepository.upload(data.imageBase64, 'page_main_imgs', data.imageFileType)
       : undefined;
 
-    const page = new Page({
+    const page: Omit<Page, 'categories'> = {
+      id: uuid(),
       content: data.content,
       slug: data.slug,
       title: data.title,
       createdAt: new Date(),
       updatedAt: new Date(),
       imageUrl: imageUrl || null,
-    });
+    };
 
-    return await this.pagesRepository.save(page);
+    return await this.pagesRepository.save(page, data.categoriesTitles || []);
   }
 }
