@@ -26,10 +26,42 @@ export const authenticateUser = (
         if (err) throw err;
 
         request.user = decoded as Omit<User, "password"> & JwtPayload;
-
-        next();
       }
     );
+
+    if (!request.user) {
+      return response.status(500).json({
+        auth: false,
+        error: "auth-jwt-decoded-no-user",
+        message: "Houve uma falha no sistema de autenticação.",
+      });
+    }
+
+    if (request.user.status === "banned") {
+      return response.status(500).json({
+        auth: false,
+        error: "auth-jwt-decoded-user-banned",
+        message: "Usuário banido.",
+      });
+    }
+
+    if (request.user.status === "suspended") {
+      return response.status(500).json({
+        auth: false,
+        error: "auth-jwt-decoded-user-suspensed",
+        message: "Usuário suspenso.",
+      });
+    }
+
+    if (request.user.status === "pending_auth") {
+      return response.status(500).json({
+        auth: false,
+        error: "auth-jwt-decoded-pending-auth",
+        message: "Usuário ainda não confirmou o e-mail.",
+      });
+    }
+
+    next();
   } catch (err: any) {
     if (err instanceof JsonWebTokenError) {
       return response.status(500).json({
