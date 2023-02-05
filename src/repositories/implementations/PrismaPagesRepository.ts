@@ -43,6 +43,18 @@ export class PrismaPagesRepository implements IPagesRepository {
     return createdPage;
   };
 
+  async update(id: string, pageData: Partial<Omit<Page, "categories" | "id" | "slug">>, categoriesTitles?: string[]): Promise<Page> {
+    let categoriesQuery = {};
+
+    if (!!categoriesTitles) {
+      categoriesQuery = { categories: { set: categoriesTitles.map(title => ({ title })) } };
+    }
+
+    const updatedPage = await prisma.page.update({ where: { id }, data: { ...pageData, ...categoriesQuery  }, include: { categories: true } })
+
+    return updatedPage;
+  }
+
   async findAllByNameOrCategory(searchParam?: string, page?: number, per?: number) {
     const queryPage = page || 1;
     const queryPer = per || 10;
