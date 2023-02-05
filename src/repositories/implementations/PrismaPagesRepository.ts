@@ -46,11 +46,24 @@ export class PrismaPagesRepository implements IPagesRepository {
   async update(id: string, pageData: Partial<Omit<Page, "categories" | "id" | "slug">>, categoriesTitles?: string[]): Promise<Page> {
     let categoriesQuery = {};
 
-    if (!!categoriesTitles) {
-      categoriesQuery = { categories: { set: categoriesTitles.map(title => ({ title })) } };
+    if (!!categoriesTitles?.length) {
+      categoriesQuery = {
+        categories: {
+          set: categoriesTitles.map(title => ({ title })),
+        },
+      };
     }
 
-    const updatedPage = await prisma.page.update({ where: { id }, data: { ...pageData, ...categoriesQuery  }, include: { categories: true } })
+    const updatedPage = await prisma.page.update({
+      where: { id },
+      data: {
+        ...pageData,
+        ...categoriesQuery,
+      },
+      include: {
+        categories: true,
+      },
+    })
 
     return updatedPage;
   }
